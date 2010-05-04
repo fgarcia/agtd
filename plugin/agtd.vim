@@ -3,14 +3,26 @@
 "
 " Author:	    Francisco Garcia Rodriguez <contact@francisco-garcia.net>
 "
-" Licence:	This program is free software; you can redistribute it and/or
-"		modify it under the terms of the GNU General Public License.
-"		See http://www.gnu.org/copyleft/gpl.txt
-"		This program is distributed in the hope that it will be
-"		useful, but WITHOUT ANY WARRANTY; without even the implied
-"		warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+" Licence:	
 "
-" Version:	0.2 Alpha
+" Almighty GTD File Vim Script
+"
+" Copyright (C) 2010  Francisco Garcia Rodriguez <contact@francisco-garcia.net>
+" 
+" This program is free software: you can redistribute it and/or modify
+" it under the terms of the GNU General Public License as published by
+" the Free Software Foundation, either version 3 of the License, or
+" (at your option) any later version.
+" 
+" This program is distributed in the hope that it will be useful,
+" but WITHOUT ANY WARRANTY; without even the implied warranty of
+" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+" GNU General Public License for more details.
+" 
+" You should have received a copy of the GNU General Public License
+" along with this program.  If not, see <http://www.gnu.org/licenses/>.
+" 
+" Version:	0.3 (Alpha)
 "
 " Files:	
 "		doc/agtd.vim
@@ -19,19 +31,24 @@
 "		ftplugin/agtd.vim
 "
 " History:
+"   0.3  License text fix
+"        New author email address
+"        New folding function. Now based on sections, not on indentation
+"
 "   0.2  Bug fixing and clutter clean-up
-"           Calendar displays colors
-"           Variable naming matches better plug-in name
-"           Task insertions works when there is an http:// address
-"           Common environment values pushed into a ftplugin
-"           UTL Schema prototype for ssh links
+"        Calendar displays colors
+"        Variable naming matches better plug-in name
+"        Task insertions works when there is an http:// address
+"        Common environment values pushed into a ftplugin
+"        UTL Schema prototype for ssh links
+"
 "   0.1  Initial version
 " ------------------------------------------------------------------------------
 
 if exists("loaded_agtd") 
     finish
 endif
-let loaded_agtd = "0.1"
+let loaded_agtd = "0.3"
 
 let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\d\d\)\?'
 let s:agtd_ProjectRegx = '^\s\+\u\+'
@@ -50,7 +67,7 @@ let s:agtd_ProjectRegx = '^\s\+\u\+'
 "
 "       @net p:task:subtask Find person
 "
-function Gtd_insertTask()
+function! Gtd_insertTask()
     let task_line_no = line ('.')
     let line         = getline (task_line_no)
     let task         = matchstr (line,' \w.*$')
@@ -110,7 +127,7 @@ endfunction
 " If there are different subprojects (p:xxx:yy:z) the function will actually
 " start jumping step by step, deeper into the hierarchy until the end or the
 " first failed search
-function Gtd_getProject()
+function! Gtd_getProject()
     let line = getline ('.')
     let label = matchstr(line, 'p:\S\+')
     let path = split (label, ':')
@@ -141,36 +158,80 @@ function Gtd_getProject()
     " echo listLines
 endfunction
 
-
-" FoldLevel for TODO files
+" Get the column of the first character for sections for the line 'lineNum'
+" 
+" Sections start with a section marker (# @ ;) or just contain a project title
+" (uppercase and '_'). 
 "
-" Indent based level. The diference from fdm=indent is that two line breaks
-" are needed to break the fold
-function Gtd_foldLevel(pos)
-    let line = getline (a:pos)
-    let col = match (line,'\S')
-    if col == -1
-        " Empty lines assume same level as the previous one
-        " ... except if the next one is a lower indentation
-        let line = getline (a:pos - 1)
-        let col_up = match (line,'\S')
-
-        let line = getline (a:pos - 1)
-        let col_down = match (line,'\S')
-        if col_up > col_down
-            let col = col_up;
-        endif
+" If either of them is found, it returns the column of the
+" first character. Otherwise returns -1
+"
+function! Gtd_getSectionColumn(lineNum)
+    let lineText = getline (a:lineNum)
+    let lineCol = match (lineText,'\S')
+    if lineCol == -1
+        " No fold level for empty line
+        return -1
     endif
-    let level = col / 4
+
+    " Check for lines with just a project title
+    let projectTitle = match (lineText,'^\s\+[\u_]\+\s*')
+    if projectTitle == 0
+        return lineCol
+    endif
+
+    let markerPos = match (lineText,'[#@;]')
+    if markerPos == lineCol
+        " Line starting with a section marker
+        return markerPos
+    else
+        " Other type of lines
+        return -1
+    endif
+endfu
+
+
+" FoldLevel for AGTD files
+"
+" The fold level is based on the column of the first section marker divided
+" by the current tab width. Tab markers are identified by the function
+" Gtd_getSectionColumn()
+"
+" If no section marker is found in the current line, it will look for one in
+" the previous lines divided. In such cases it will be assumed that the
+" current line is one level deeper (+1) within the first previous section
+" line.
+"
+function! Gtd_foldLevel(pos)
+    " Get section marker position
+    let sectionColumn = -1
+    let lineNum = a:pos + 1
+    while sectionColumn == -1 && lineNum != 1
+        let lineNum -= 1
+        let sectionColumn = Gtd_getSectionColumn(lineNum)
+    endwhile
+
+    if sectionColumn == -1
+        " No section found
+        return 0
+    endif
+
+    let level = sectionColumn / &shiftwidth
+    if lineNum != a:pos
+        " Section had to be searched in previous lines. Therefore Current line
+        " is contained within a section: The fold level is +1 greater than its
+        " section
+        let level += 1
+    endif
     return level
-endfunction
+endfu
 
 
 " Search the file for mark tags and set them
 "
 " Starting from the beggining of the file, search for auto-mark labels and set
 " them as a new mark
-function Gtd_setMarks()
+function! Gtd_setMarks()
     call cursor (1)
     let pos = search('m::\l', 'W')
     while pos != 0
@@ -188,7 +249,7 @@ endfunction
 " Search project
 "
 " Locate first appearence of project name, jump to it and unfold
-function Gtd_searchProject(pro)
+function! Gtd_searchProject(pro)
     let line_no = search ('^\s\+'.a:pro) 
     call cursor (line_no) 
     exe line_no."foldopen"
@@ -204,7 +265,7 @@ endfunction
 "
 " Custom function for auto-completion. Auto-complete with project names within
 " current buffer.
-function Gtd_getProjectList(ArgLead, CmdLine, CursorPos)
+function! Gtd_getProjectList(ArgLead, CmdLine, CursorPos)
     let proList = []
     let proName = '^\s\+'.a:ArgLead.'\u\+'
     let startPos = getpos ('.')
@@ -227,7 +288,7 @@ endfunction
 
 
 " Collect lines with a date mark on it
-function s:Gtd_getDateLines()
+function! s:Gtd_getDateLines()
     let startPos = getpos ('.')
     let datesList = []
     call cursor (1,1)
@@ -255,7 +316,7 @@ endfunction
 
 
 " Create a buffer with all marked the marked events
-function Gtd_displayCalendar()
+function! Gtd_displayCalendar()
     let datesList = s:Gtd_getDateLines()
 
     " Make that temporal buffer
@@ -303,7 +364,7 @@ endfunction
 "   * The generated UID is random. If you generate and import the output
 "   several times, you will get the same event repeated in your calendar
 "   program because it cannot identify updated components TODO
-function Gtd_buildICalFile()
+function! Gtd_buildICalFile()
     let datesList = s:Gtd_getDateLines()
     let uid = 0
 
