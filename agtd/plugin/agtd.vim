@@ -34,6 +34,7 @@
 "   0.3  License text fix
 "        New author email address
 "        New folding function. Now based on sections, not on indentation
+"        UTL configuration removed
 "
 "   0.2  Bug fixing and clutter clean-up
 "        Calendar displays colors
@@ -386,14 +387,6 @@ function! Gtd_buildICalFile()
     endfor
     echo "END:VCALENDAR"
 endfunction
-
-" Utl SSH Scheme
-fu! Utl_AddressScheme_ssh(auri, fragment, dispMode)
-    let add = split(a:auri,':')[-1]
-    echo add
-    exe "!sh -c \"ssh ".add."\""
-    return []
-endf
 
 " Almighty GTD Vim script commands
 command -nargs=1 -complete=customlist,Gtd_getProjectList GSearch call Gtd_searchProject("<args>")

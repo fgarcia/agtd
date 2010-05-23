@@ -10,7 +10,7 @@ setlocal foldexpr=Gtd_foldLevel(v:lnum)
 setlocal fdm=expr
 setlocal fdi=0
 setlocal formatoptions=
-setlocal foldminlines=0
+setlocal foldminlines=1
 setlocal nowrap
 setlocal cindent
 

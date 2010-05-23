@@ -7,7 +7,7 @@ Version AGTD v0.1 ALPHA, for Vim version 7, 2010-01-19
                           User Manual
 
                     By Francisco Garcia Rodriguez
-                    <vim_agtd@francisco-garcia.net>
+                  <francisco.garcia.100@gmail.com>
 
         Contents:
 
@@ -19,7 +19,7 @@ Please, be aware that this is a highly young experimental project that I write
 in my free time. I might reconsider some concepts, I might change the notation
 and many things might change. You must be prepared to notice some glitches
 until this goes more stable. I suppose future updates might not be compatible
-until I feel I got it right. See|agtd-todo| for things that I still have
+until I feel I got it right. See|agtd-todo|for things that I still have
 planned
 
 
