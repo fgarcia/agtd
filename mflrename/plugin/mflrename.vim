@@ -28,7 +28,7 @@
 "   folder where you listed the file and execute the file
 "       sh /tmp/do
 "
-" Author:  Francisco Garcia Rodriguez <frankalahan@gmail.com>
+" Author:  Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
 "
 " License:
 "            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
