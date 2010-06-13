@@ -46,8 +46,7 @@ endfu
 
 " Column of the first character for sections
 " 
-" Sections start with a section marker (# @ ;) or just contain a project title
-" (uppercase and '_'). 
+" Sections start with a main section marker (#) or with a subsection (;) 
 "
 " If neither of them is found, it returns the column of the
 " first character. Otherwise returns -1
@@ -61,13 +60,12 @@ function! Pnote_getSectionColumn(lineNum)
         return -1
     endif
 
-    " Check for lines with just a project title
-    let projectTitle = match (lineText,'^\s\+[A-Z][A-Z0-9_]\+\s*$')
-    if projectTitle == 0
+    let mainSectionLine = match (lineText,'^#')
+    if mainSectionLine == 0
         return lineCol
     endif
 
-    let markerPos = match (lineText,'[#@;]')
+    let markerPos = match (lineText,'[@;]')
     if markerPos == lineCol
         " Line starting with a section marker
         return markerPos

@@ -26,7 +26,7 @@ syn keyword	confTodo	contained TODO FIXME XXX
 syn match	confComment	"^#.*" contains=confTodo
 syn region	confString	start=+"+ skip=+\\\\\|\\"+ end=+"+ oneline
 syn region	confString	start=+'+ skip=+\\\\\|\\'+ end=+'+ oneline
-syn match       SUB_COMMENT     "^\s\s*#.*"
+syn match       SUB_COMMENT     " \(#\|-- \).*"
 syn match       ANOTATION       "\s*;\s.*"
 syn match       COMMAND         "\s*$\s.*"
 
@@ -40,7 +40,7 @@ syn match       COMMAND         "\s*$\s.*"
 hi def link confComment	Comment
 hi def link confTodo	Todo
 hi def link confString	String
-hi SUB_COMMENT guifg=darkcyan
+hi SUB_COMMENT guifg=lightcyan
 hi ANOTATION guifg=lightgreen
 hi COMMAND guifg=cyan
 

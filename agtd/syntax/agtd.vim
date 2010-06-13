@@ -21,6 +21,7 @@ syn match       NOSPELL3        "\S\+=\S\+" contains=@NoSpell
 
 syn match       TASK            "\s@\w*" contains=@NoSpell
 syn match       PROJECT         "\sp\(:\w*\)\+" contains=@NoSpell
+syn match       SECTION         "^#.*" contains=@NoSpell
 
 " Project names must be written in a x4 column
 syn match       PROJECT         "^\(\s\{4}\)\+\u\(\u\|\d\|_\)\+"
@@ -35,6 +36,8 @@ syn match       DATE            "\d\{4}-\d\d-\d\d"
 
 " Define the default highlighting.
 " Only used when an item doesn't have highlighting yet
+hi def link SECTION Comment
+
 hi TASK guifg=lightgreen
 hi PROJECT guifg=lightred
 hi LIST guifg=magenta
