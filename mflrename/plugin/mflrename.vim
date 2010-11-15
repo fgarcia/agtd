@@ -28,13 +28,13 @@
 "   folder where you listed the file and execute the file
 "       sh /tmp/do
 "
-" Author:  Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
+" Author:  Francisco Garcia Rodriguez <public@francisco-garcia.net>
 "
 " License:
 "            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 "                    Version 2, December 2004
 "
-"   Copyright (C) 2010 Francisco Garcia <frankalahan@gmail.com>
+"   Copyright (C) 2010 Francisco Garcia <public@francisco-garcia.net>
 "
 "   Everyone is permitted to copy and distribute verbatim or modified
 "   copies of this license document, and changing it is allowed as long

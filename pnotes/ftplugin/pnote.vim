@@ -2,7 +2,7 @@
 "
 " File: Power Note for Vim
 "
-" Author: Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
+" Author: Francisco Garcia Rodriguez <public@francisco-garcia.net>
 "
 " Licence: Copyright (C) 2010 Francisco Garcia Rodriguez
 " This program is free software: you can redistribute it and/or

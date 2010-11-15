@@ -7,7 +7,7 @@ Version AGTD v0.1 ALPHA, for Vim version 7, 2010-01-19
                           User Manual
 
                     By Francisco Garcia Rodriguez
-                  <francisco.garcia.100@gmail.com>
+                  <public@francisco-garcia.net>
 
         Contents:
 
