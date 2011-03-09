@@ -1,50 +1,69 @@
-" ------------------------------------------------------------------------------
-" File:		plugin/agtd.vim - Almighty GTD File
+" -----------------------------------------------------------------------------
 "
-" Author:	    Francisco Garcia Rodriguez <contact@francisco-garcia.net>
+" File: plugin/agtd.vim - Almighty GTD File Vim Script
 "
-" Licence:	
+" Author: Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
 "
-" Almighty GTD File Vim Script
-"
-" Copyright (C) 2010  Francisco Garcia Rodriguez <contact@francisco-garcia.net>
-" 
-" This program is free software: you can redistribute it and/or modify
-" it under the terms of the GNU General Public License as published by
-" the Free Software Foundation, either version 3 of the License, or
-" (at your option) any later version.
+" Licence: Copyright (C) 2010 Francisco Garcia Rodriguez
+" This program is free software: you can redistribute it and/or
+" modify it under the terms of the GNU General Public License.
+" See http://www.gnu.org/licenses/gpl.html
 " 
 " This program is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU General Public License for more details.
 " 
-" You should have received a copy of the GNU General Public License
-" along with this program.  If not, see <http://www.gnu.org/licenses/>.
-" 
-" Version:	0.3 (Alpha)
+" Repository: git@github.com:FGarcia/agtd.git 
 "
-" Files:	
-"		doc/agtd.vim
-"		plugin/agtd.vim
-"		syntax/agtd.vim
-"		ftplugin/agtd.vim
+" Files:    
+"       doc/agtd.txt
+"       plugin/agtd.vim
+"       syntax/agtd.vim
+"       ftplugin/agtd.vim
+"
+" Version:  
+"       0.3 (Alpha)
+"
+"       So far I label my releases with 'Alpha' because I might change the
+"       context/structure of the TODOs files and break support for previous
+"       versions
+"
+" Bugs:
+"       I have developed this script according my environment. I would expect
+"       that some behaviour might be different or broken for other users
+"       (color schema, tab width...)
+"
+"       The :GSearch and :GGo commands are have a similar function but with
+"       different implementations. I am still exploring the best way to define
+"       projects
 "
 " History:
-"   0.3  License text fix
-"        New author email address
-"        New folding function. Now based on sections, not on indentation
-"        UTL configuration removed
+"   v0.4  ???
+"		
+"   v0.3  2011-03-09 
+"       License text fix
+"       Author information updated
+"       New folding schema. Now based on sections, not on indentation
+"       New help command :AG
+"       Command :GSearch displays active tasks before jumping to project tree
+"       UTL configuration removed
+"       nmap shortcuts now start with <Leader> key
+"       Improved syntax for project and comment sections
+"       Indentation within tags
 "
-"   0.2  Bug fixing and clutter clean-up
-"        Calendar displays colors
-"        Variable naming matches better plug-in name
-"        Task insertions works when there is an http:// address
-"        Common environment values pushed into a ftplugin
-"        UTL Schema prototype for ssh links
+"   v0.2  2010-01-28 
+"       Bug fixing and clutter clean-up
+"       Calendar displays colors
+"       Variable naming matches better plug-in name
+"       Task insertions works when there is an http:// address
+"       Common environment values pushed into a ftplugin
+"       UTL Schema prototype for ssh links
 "
-"   0.1  Initial version
-" ------------------------------------------------------------------------------
+"   v0.1  2010-01-20
+"       Initial version
+"
+" -----------------------------------------------------------------------------
 
 if exists("loaded_agtd") 
     finish
@@ -52,7 +71,7 @@ endif
 let loaded_agtd = "0.3"
 
 let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\d\d\)\?'
-let s:agtd_ProjectRegx = '^\s\+\u\+'
+let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*\$'
 
 
 " Move task at TOP
@@ -68,7 +87,7 @@ let s:agtd_ProjectRegx = '^\s\+\u\+'
 "
 "       @net p:task:subtask Find person
 "
-function! Gtd_insertTask()
+function! Agtd_insertTask()
     let task_line_no = line ('.')
     let line         = getline (task_line_no)
     let task         = matchstr (line,' \w.*$')
@@ -128,7 +147,7 @@ endfunction
 " If there are different subprojects (p:xxx:yy:z) the function will actually
 " start jumping step by step, deeper into the hierarchy until the end or the
 " first failed search
-function! Gtd_getProject()
+function! Agtd_getProject()
     let line = getline ('.')
     let label = matchstr(line, 'p:\S\+')
     let path = split (label, ':')
@@ -142,7 +161,6 @@ function! Gtd_getProject()
     let projectPos = getpos ('.')
 
     " Get tasks for same project (TODO later)
-    "echo "Tasks for project ".label
     normal gg
     let pos = search(label, 'W')
     let listLines = []
@@ -156,32 +174,31 @@ function! Gtd_getProject()
     call setpos ('.', projectPos)
     normal zt
     normal jzo
-    " echo listLines
 endfunction
 
-" Get the column of the first character for sections for the line 'lineNum'
+" Column of the first character for sections
 " 
 " Sections start with a section marker (# @ ;) or just contain a project title
-" (uppercase and '_'). 
 "
-" If either of them is found, it returns the column of the
+" If neither of them is found, it returns the column of the
 " first character. Otherwise returns -1
 "
-function! Gtd_getSectionColumn(lineNum)
+function! Agtd_getSectionColumn(lineNum, markers)
     let lineText = getline (a:lineNum)
     let lineCol = match (lineText,'\S')
     if lineCol == -1
-        " No fold level for empty line
+        " Line with no text, no fold level here
         return -1
     endif
 
-    " Check for lines with just a project title
-    let projectTitle = match (lineText,'^\s\+[\u_]\+\s*')
+    " Check for lines with just a project title (uppercase and '_') optionally
+    " followed by a URL or file marker (\w::\w)
+    let projectTitle = match (lineText, s:agtd_ProjectRegx)
     if projectTitle == 0
         return lineCol
     endif
 
-    let markerPos = match (lineText,'[#@;]')
+    let markerPos = match (lineText,a:markers)
     if markerPos == lineCol
         " Line starting with a section marker
         return markerPos
@@ -196,21 +213,26 @@ endfu
 "
 " The fold level is based on the column of the first section marker divided
 " by the current tab width. Tab markers are identified by the function
-" Gtd_getSectionColumn()
+" Agtd_getSectionColumn()
 "
 " If no section marker is found in the current line, it will look for one in
 " the previous lines divided. In such cases it will be assumed that the
 " current line is one level deeper (+1) within the first previous section
 " line.
 "
-function! Gtd_foldLevel(pos)
+function! Agtd_getFoldLevel(pos)
     " Get section marker position
     let sectionColumn = -1
     let lineNum = a:pos + 1
+
+	let markers = '[#@;]'
+    "let firstChar = strpart (lineText, match (lineText,'\S'), 1)
+	"let markers -= substitute (lineText, firstChar, '', 0)
+    "let lineWithMarker = match (firstChar,a:markers)
     while sectionColumn == -1 && lineNum != 1
         let lineNum -= 1
-        let sectionColumn = Gtd_getSectionColumn(lineNum)
-    endwhile
+        let sectionColumn = Agtd_getSectionColumn(lineNum, markers)
+	endwhile
 
     if sectionColumn == -1
         " No section found
@@ -232,7 +254,7 @@ endfu
 "
 " Starting from the beggining of the file, search for auto-mark labels and set
 " them as a new mark
-function! Gtd_setMarks()
+function! Agtd_setMarks()
     call cursor (1)
     let pos = search('m::\l', 'W')
     while pos != 0
@@ -250,7 +272,8 @@ endfunction
 " Search project
 "
 " Locate first appearence of project name, jump to it and unfold
-function! Gtd_searchProject(pro)
+function! Agtd_searchProject(pro)
+    exe 'g/p:\S*'.tolower(a:pro)." /"
     let line_no = search ('^\s\+'.a:pro) 
     call cursor (line_no) 
     exe line_no."foldopen"
@@ -266,7 +289,7 @@ endfunction
 "
 " Custom function for auto-completion. Auto-complete with project names within
 " current buffer.
-function! Gtd_getProjectList(ArgLead, CmdLine, CursorPos)
+function! Agtd_getProjectList(ArgLead, CmdLine, CursorPos)
     let proList = []
     let proName = '^\s\+'.a:ArgLead.'\u\+'
     let startPos = getpos ('.')
@@ -276,7 +299,6 @@ function! Gtd_getProjectList(ArgLead, CmdLine, CursorPos)
         call cursor (pos)
         let line = getline (pos)
         let pro = matchstr (line,'\u\+')
-        echo pro
         if index(proList, pro) == -1
             call add(proList, pro)
         endif
@@ -289,7 +311,7 @@ endfunction
 
 
 " Collect lines with a date mark on it
-function! s:Gtd_getDateLines()
+function! s:Agtd_getDateLines()
     let startPos = getpos ('.')
     let datesList = []
     call cursor (1,1)
@@ -317,8 +339,8 @@ endfunction
 
 
 " Create a buffer with all marked the marked events
-function! Gtd_displayCalendar()
-    let datesList = s:Gtd_getDateLines()
+function! Agtd_displayCalendar()
+    let datesList = s:Agtd_getDateLines()
 
     " Make that temporal buffer
     let tmpBuffer = "tmpGtdCalendarDisp.tmp"
@@ -365,8 +387,8 @@ endfunction
 "   * The generated UID is random. If you generate and import the output
 "   several times, you will get the same event repeated in your calendar
 "   program because it cannot identify updated components TODO
-function! Gtd_buildICalFile()
-    let datesList = s:Gtd_getDateLines()
+function! Agtd_buildICalFile()
+    let datesList = s:Agtd_getDateLines()
     let uid = 0
 
     " File header
@@ -388,12 +410,21 @@ function! Gtd_buildICalFile()
     echo "END:VCALENDAR"
 endfunction
 
+function! Agtd_getShortHelp()
+    echo "AGTD Commands\n\n"
+    echo ":GSearch      Jump to project task (with autocomplete)"
+    echo ":GCalendar    Extract dates from tasks and build a calendar"
+    echo ":GInsert      Move task to the NOW section and attach project path"
+    echo ":GGo          Extract project name from current line and jump to it\n\n"
+    echo ":help agtd    More help about AGTD"
+endfunction
+
 " Almighty GTD Vim script commands
-command -nargs=1 -complete=customlist,Gtd_getProjectList GSearch call Gtd_searchProject("<args>")
-command GCalendar call Gtd_displayCalendar()
-command GInsert call Gtd_insertTask()
-command GGo call Gtd_getProject() 
-"command Gsort .sort /\s\{8}/
+command -nargs=1 -complete=customlist,Agtd_getProjectList GSearch call Agtd_searchProject("<args>")
+command GCalendar call Agtd_displayCalendar()
+command GInsert call Agtd_insertTask()
+command GGo call Agtd_getProject() 
+command AG call Agtd_getShortHelp() 
 
 finish
 

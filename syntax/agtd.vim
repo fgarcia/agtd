@@ -1,5 +1,5 @@
 " Language: AGTD syntax file
-" Author: Francisco Garcia Rodriguez <public@francisco-garcia.net>
+" Author: Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
 "
 " Licence: Copyright (C) 2010 Francisco Garcia Rodriguez
 " This program is free software: you can redistribute it and/or
@@ -12,21 +12,24 @@
 " GNU General Public License for more details.
 " 
 " History:	
-"   v0.2  2005-Jun 20
-"       Bug fixing and clutter clean-up
+"   See plugin/agtd.vim 
+"  
 
 syn match       NOSPELL1        "\<\u\+\>" contains=@NoSpell
 syn match       NOSPELL2        "\S*[:\=]\S*" contains=@NoSpell
 syn match       NOSPELL3        "\S\+=\S\+" contains=@NoSpell
 
-syn match       TASK            "\s@\w*" contains=@NoSpell
-syn match       PROJECT         "\sp\(:\w*\)\+" contains=@NoSpell
+syn match       TASK            "\s@\w\+" contains=@NoSpell
 syn match       SECTION         "^#.*" contains=@NoSpell
-
-" Project names must be written in a x4 column
-syn match       PROJECT         "^\(\s\{4}\)\+\u\(\u\|\d\|_\)\+"
 syn match       LIST            "^\s\+[-\*]"
 
+" Project names must be written in a x4 column
+syn match       PROJECT         "^\(\s\{4}\)\+\u\(\u\|\d\|_\)\+\s*\(--.*\)\=$" contains=PROTOCOL
+
+" Project name within task line
+syn match       PROJECT         "\sp\(:\w*\)\+" contains=@NoSpell
+
+syn match       SUBCOMMENT      "^\s\+\(#\|;\)\s.*"hs=s+1
 syn match       PROTOCOL        "\w\+::" nextgroup=URL,USERNAME contains=@NoSpell
 syn match       URL             "\S\+" contained contains=@NoSpell
 syn match       USERNAME        "\S\+@" contained nextgroup=URL contains=@NoSpell
@@ -39,6 +42,7 @@ syn match       DATE            "\d\{4}-\d\d-\d\d"
 hi def link SECTION Comment
 
 hi TASK guifg=lightgreen
+hi SUBCOMMENT guifg=darkcyan 
 hi PROJECT guifg=lightred
 hi LIST guifg=magenta
 hi MARK guifg=lightcyan
