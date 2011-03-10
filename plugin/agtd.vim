@@ -71,7 +71,7 @@ endif
 let loaded_agtd = "0.3"
 
 let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\d\d\)\?'
-let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*\$'
+let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*$'
 
 
 " Move task at TOP
