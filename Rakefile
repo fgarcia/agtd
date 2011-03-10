@@ -17,12 +17,13 @@ task :get do
     end
 end
 
+desc "Pack all files into a VBA file (release)"
 task :vba => :clean do
     abort("ERROR Temporal file already exists!") if File.exist? 'f.tmp' 
     File.open('f.tmp', 'w') do |out|  
       out.puts COMPONENTS
     end  
-    sh %{vim -s build.vim}
+    sh %{VIM -s build.vim}
     #rm f.tmp
 end
 
