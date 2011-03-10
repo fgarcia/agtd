@@ -1,0 +1,62 @@
+# NOW
+    @net Add new mail filters
+    @work p:drupa Run maintenance scripts remotely
+        Maybe remotely with this line ???
+        45 * * * * /usr/bin/lynx -source http://hostname/cron.php
+    @home Laundry
+    @home Week menu plan 
+    @net p:gtdvim Upload new version
+    @work p:pluto:vpn Install OpenVPN (static key)  F::11-25
+
+# LATER
+; Tasks that can wait some days and/or are not assigned to any project
+    @work p:pluto:vpn Open ports for VPN clients
+    @city Groceries S::01-20
+
+# WAITING FOR m::w
+; Tasks moved here depends on some future I must wait for
+    @house GPS packet exchange (order no. 5104-31539)
+    @net Money transfer <url:http://mybank.com> W::08-01 
+
+# PROJECTS m::p
+; Tree of projects I am working on
+; Notice that 
+    PLUTO           PLUTO server
+        ; List of links I might need
+        http:://pluto.intranet:10000
+        ssh::root@pluto.intranet 
+        VPN         Install OpenVPN server
+            @work Try config with certs http://www.openvpn.org
+            @work Verify VPN connection
+    BLOG            Digital Lumberjack
+        @net    Check for new users
+        @net    Fix tagging issue
+        @net    Update wysiwyg modules
+
+# LISTEN m::l
+; Reminder list "don't forget" collection
+; Usually cannot be made the task of any project, but might inspire one
+    LESEN
+        COMPUTING
+            * Code Clean (Coding Horror)
+        LITERATURE
+            * 1984
+            * Uncle Toms Cabin
+    VIDEO
+        * Rome 2e 2,3,4,5,6,7,8,9
+        * House
+        * BBC - Future of Food 1, 2, 3
+    LEARN
+        * nagios
+        * argus-monitor
+        * etherape
+        * tcl/tk
+
+# CALENDAR m::c
+; List of important dates with no connection to a task
+    S::01-27 Apple Tablet PC launch
+    F::02-24 @work IBM guy comes 
+    F::03-29 p:social Dinner with the kids
+
+
+vim:filetype=agtd
