@@ -1,6 +1,7 @@
 Tired of trying thousand of tools to organize my life, and inspired in the
-idea of ONE BIG TEXT FILE from Danny O'Brien, I decided that the world needed
-yet another GTD tool. The "Almighty" part is a reference to the idea of having
+idea of [ONE BIG TEXT FILE](http://www.43folders.com/2005/08/17/life-inside-one-big-text-file) from
+Danny O'Brien, I decided that the world needed yet another GTD tool. The
+"Almighty" part is a reference to the idea of having
 all type of notes about your tasks in one single file.
 
 The whole idea of this GTD implementation relies in some custom notation
@@ -14,8 +15,9 @@ lightning fast my notes. This is the result so far:
     * Ease project tasks/notes finding
     * Build a calendar with all the dates in the text file
 
-I strongly recommend the UTL script as a side companion. It will enhance your
-notes allowing you to open different links with just a short keystroke.
+I strongly recommend the [UTL](http://vim.sourceforge.net/scripts/script.php?script_id=293) script 
+as a side companion. It will enhance your notes allowing you to open different
+links with just a short keystroke.
 
 This script is my idea of how GTD should be done with VIM. Any comments, bug
 reports, patches, forks, fixes and suggestions are welcome.
@@ -43,13 +45,13 @@ features:
 Bugs
 ---------
 
-I have developed this script according my environment. I would expect
-that some behaviour might be different or broken for other users
-(color schema, tab width...)
+During the development of this script I might have overlooked some environment
+issues. For example, most of the time I use the GUI version of Vim with the
+'dark-blue' color schema (:colorscheme darkblue). I would not be surprised if
+things look ugly with light backgrounds and/or the command line.
 
-Most of the time I use GUI version of Vim with the 'dark-blue' color schema. I
-would not be surporised if this scripts does not look OK with light backgrounds
-and/or the command line.
+Some things are half implement, others just confusing. Since this is
+already doing the basic work I need I am no longer working too hard on it.
 
 License
 ---------
