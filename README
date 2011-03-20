@@ -18,5 +18,26 @@ I strongly recommend the UTL script as a side companion. It will enhance your
 notes allowing you to open different links with just a short keystroke.
 
 This script is my idea of how GTD should be done with VIM. Any comments, bug
-reports, patches, fixes and suggestions are welcome.
+reports, patches, forks, fixes and suggestions are welcome.
 
+Usage
+---------
+
+The best way to get started is playing around with the example file, which you can download from:
+
+https://github.com/FGarcia/agtd/blob/master/todo-example.txt
+
+For the online help you can try this:
+    :AG
+    :help agtd
+
+Bugs
+---------
+
+
+License
+---------
+Copyright © 2011 Francisco Garcia Rodriguez. 
+
+GNU General Public License - Version 3
+See License.txt in this directory
