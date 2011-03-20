@@ -2,7 +2,7 @@
 "
 " File: plugin/agtd.vim - Almighty GTD File Vim Script
 "
-" Author: Francisco Garcia Rodriguez <francisco.garcia.100@gmail.com>
+" Author: Francisco Garcia Rodriguez <public@francisco-garcia.net>
 "
 " Licence: Copyright (C) 2010 Francisco Garcia Rodriguez
 " This program is free software: you can redistribute it and/or
@@ -14,7 +14,9 @@
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU General Public License for more details.
 " 
-" Repository: git@github.com:FGarcia/agtd.git 
+" Web: 
+"   https://github.com/fgarcia/agtd
+"   http://www.vim.org/scripts/script.php?script_id=2946
 "
 " Files:    
 "       doc/agtd.txt
