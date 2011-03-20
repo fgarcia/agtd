@@ -8,12 +8,17 @@ COMPONENTS =
     "plugin/agtd.vim",
     "syntax/agtd.vim"
 
+VIMDIR = (ENV['VIMRUNTIME'] || ENV['HOME'] + "/.vim")
+abort if not File.directory? VIMDIR
+
+
 desc "Get AGTD files from VIM folder"
 task :get do
-    VIMDIR = (ENV['VIMRUNTIME'] || ENV['HOME'] + "/.vim")
-    abort if not File.directory? VIMDIR
-    COMPONENTS.each do |fi|
-        copy VIMDIR + fi, fi
+    COMPONENTS.each do |target|
+        source = VIMDIR + target
+        unless uptodate?(target, source)
+            copy source, target
+        end
     end
 end
 
