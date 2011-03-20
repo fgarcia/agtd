@@ -24,7 +24,7 @@
         ; List of links I might need
         http:://pluto.intranet:10000
         ssh::root@pluto.intranet 
-        VPN -- Install OpenVPN server
+        VPN -- Install OpenVPN server m::v
             @work Try config with certs http://www.openvpn.org
             @work Verify VPN connection
     BLOG -- Digital Lumberjack
