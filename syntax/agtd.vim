@@ -41,15 +41,15 @@ syn match       DATE            "\d\{4}-\d\d-\d\d"
 " Only used when an item doesn't have highlighting yet
 hi def link SECTION Comment
 
-hi TASK guifg=lightgreen
-hi SUBCOMMENT guifg=darkcyan 
-hi PROJECT guifg=lightred
-hi LIST guifg=magenta
-hi MARK guifg=lightcyan
-hi PROTOCOL guifg=lightmagenta 
-hi URL guifg=lightcyan gui=underline
-hi USERNAME guifg=lightblue
-hi DATE guifg=lightred
+hi TASK guifg=lightgreen ctermfg=green
+hi SUBCOMMENT guifg=darkcyan  ctermfg=cyan
+hi PROJECT guifg=lightred ctermfg=red
+hi LIST guifg=magenta ctermfg=magenta
+hi MARK guifg=lightcyan ctermfg=lightcyan
+hi PROTOCOL guifg=lightmagenta ctermfg=magenta
+hi URL guifg=lightcyan gui=underline cterm=underline ctermfg=blue
+hi USERNAME guifg=lightblue ctermfg=blue
+hi DATE guifg=lightred ctermfg=red
 syn cluster GTDHI add=TASK,MARK,PROTOCOL,URL,USERNAME
 
 " vim: ts=8 sw=2
