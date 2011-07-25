@@ -348,6 +348,13 @@ function! Agtd_displayCalendar()
     let tmpBuffer = "tmpGtdCalendarDisp.tmp"
     let gtdBuffer = bufnr ('')
     silent! exe 'edit '. tmpBuffer
+
+    " If we are opening the calendar after it has been previously opened, the file
+    " already exists, and we need to make it modifiable and clear it, or
+    " errors will be created.
+    set noro
+    normal ggdG
+
     set buftype=nofile
     set bufhidden=hide
     set noswf
