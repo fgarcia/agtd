@@ -72,7 +72,7 @@ if exists("loaded_agtd")
 endif
 let loaded_agtd = "0.3"
 
-let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\d\d\)\?'
+let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\(\d\d\)\?\d\d\)\?'
 let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*$'
 
 
@@ -325,8 +325,15 @@ function! s:Agtd_getDateLines()
         let line = getline ('.')
         let date = matchstr (line,s:agtd_dateRegx)
         let date = strpart (date, 3)
-        if strlen (date) == 5
+        let array = []
+        if strlen (date) == 5 " MM-DD
             let date = strftime("%Y")."-".date
+		elseif strlen (date) == 8 " MM-DD-YY
+			let array = split(date, '-')
+			let date = "20".array[-1]."-".join(array[0:1], '-')
+		elseif strlen (date) == 10 " MM-DD-YYYY
+			let array = split(date, '-')
+			let date = array[-1]."-".join(array[0:1], '-')
         endif
 
         " Remove indentation
@@ -365,19 +372,29 @@ function! Agtd_displayCalendar()
 
     " Display sorted list of dates and grouped by months
     let thisMonth = "XX"
+    let thisYear = "XXXX"
     for line in sort (datesList)
         " Remove date and following empty spaces
         let line = substitute (line, s:agtd_dateRegx.'\s*', "", "")
+
+		" Insert year if different from previous one
+		let year = matchstr(line,'\d\d\d\d')
+		if match (year, thisYear) == -1
+			let thisYear = year
+			call append ('$', "")
+			call append ('$', year)
+		endif
 
         " Insert month if different from the previous one
         let month = matchstr(line, '-\d\d-')
         if match (month, thisMonth) == -1
             let thisMonth = month
             call append ('$', "")
-            call append ('$', month)
+            call append ('$', "\t".month)
+            call append ('$', "")
         endif
 
-        call append ('$', "\t".line)
+        call append ('$', "\t\t".line)
     endfor
 
     " Remove two empty lines from the beginning and open all folds
