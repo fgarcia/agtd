@@ -327,7 +327,15 @@ function! s:Agtd_getDateLines()
         let date = strpart (date, 3)
         let array = []
         if strlen (date) == 5 " MM-DD
-            let date = strftime("%Y")."-".date
+			" If the event's month is more than one month ago, assume that the
+			" event date should be for next year.
+        	if (((strpart(date, 0, 2)-1) % 12)+1) < (strftime("%m")-1)
+				let year = string(strftime("%Y")+1)
+			else
+				let year = strftime("%Y")
+			endif
+
+            let date = year."-".date
 		elseif strlen (date) == 8 " MM-DD-YY
 			let array = split(date, '-')
 			let date = "20".array[-1]."-".join(array[0:1], '-')
