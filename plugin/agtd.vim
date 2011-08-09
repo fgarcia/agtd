@@ -103,7 +103,7 @@ function! Agtd_insertTask()
     " Get project label as in p:pro:sub1:sub2
     if match (line,' p:\w*') == -1
         " Line has no label 
-        let lastCol = 0
+        let lastCol = 1000000
         let project = ""
         let col = 0
         while col != 4
@@ -122,7 +122,7 @@ function! Agtd_insertTask()
             let line = getline (pos)
             let col = match(line,'\u\+')
 
-            if col != lastCol 
+            if col < lastCol
                 " Project names in the same column are siblings, not an ancestor
                 let project = ":" . tolower(matchstr(line,'\u\+')) . project
                 let lastCol = col
