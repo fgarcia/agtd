@@ -408,7 +408,7 @@ function! Agtd_displayCalendar()
     " Remove two empty lines from the beginning and open all folds
     normal gg2ddzR
     " Strip off trailing white space
-    %s/\s\+$
+    silent! %s/\s\+$
     set ro
 endfunction
 
