@@ -75,6 +75,11 @@ let loaded_agtd = "0.3"
 let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\(\d\d\)\?\d\d\)\?'
 let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*$'
 
+" Create a default for g:agtd_calendar_window
+if !exists("g:agtd_calendar_window")
+	let g:agtd_calendar_window = 'buffer'
+end
+
 
 " Move task at TOP
 "
@@ -362,7 +367,19 @@ function! Agtd_displayCalendar()
     " Make that temporal buffer
     let tmpBuffer = "tmpGtdCalendarDisp.tmp"
     let gtdBuffer = bufnr ('')
-    silent! exe 'edit '. tmpBuffer
+
+    " Depending on user selection, open calendar in a new tab,
+    " the preview window, or (default, old behavior) a buffer
+	if g:agtd_calendar_window == 'tab'
+		silent! exe 'tabedit '. tmpBuffer
+	elseif g:agtd_calendar_window == 'preview'
+		" Open the calendar in the preview window
+		silent! exe 'pedit '. tmpBuffer
+		" Switch to preview window
+		exe "normal \<C-W>P"
+	else
+		silent! exe 'edit '. tmpBuffer
+	end
 
     " If we are opening the calendar after it has been previously opened, the file
     " already exists, and we need to make it modifiable and clear it, or
@@ -410,6 +427,12 @@ function! Agtd_displayCalendar()
     " Strip off trailing white space
     silent! %s/\s\+$
     set ro
+
+    " If we open the calendar in the preview window, switch back to the main
+    " window
+	if g:agtd_calendar_window == 'preview'
+		exe "normal \<C-W>p"
+	end
 endfunction
 
 
