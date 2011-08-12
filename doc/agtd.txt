@@ -128,7 +128,8 @@ functions:
 
                                                         *agtd_calendar_window*
 This option tells AGTD where to open the calendar window when running
-:GCalendar.  Valid options are 'tab', 'preview', and 'buffer' (default).
+:GCalendar.  Valid options are 'tab', 'preview', 'split', 'vsplit' and
+'buffer' (default).
 >
     let g:agtd_calendar_window = OPTION
 >

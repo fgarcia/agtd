@@ -377,6 +377,10 @@ function! Agtd_displayCalendar()
 		silent! exe 'pedit '. tmpBuffer
 		" Switch to preview window
 		exe "normal \<C-W>P"
+	elseif g:agtd_calendar_window == 'split'
+		silent! exe 'split '. tmpBuffer
+	elseif g:agtd_calendar_window == 'vsplit'
+		silent! exe 'vsplit '. tmpBuffer
 	else
 		silent! exe 'edit '. tmpBuffer
 	end
