@@ -72,8 +72,13 @@ if exists("loaded_agtd")
 endif
 let loaded_agtd = "0.3"
 
-let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\d\d\)\?'
+let s:agtd_dateRegx    = '\u::\d\d-\d\d\(-\(\d\d\)\?\d\d\)\?'
 let s:agtd_ProjectRegx = '^\s\+[A-Z][A-Z0-9_]\+\s*\(--.*\)*$'
+
+" Create a default for g:agtd_calendar_window
+if !exists("g:agtd_calendar_window")
+	let g:agtd_calendar_window = 'buffer'
+end
 
 
 " Move task at TOP
@@ -325,8 +330,23 @@ function! s:Agtd_getDateLines()
         let line = getline ('.')
         let date = matchstr (line,s:agtd_dateRegx)
         let date = strpart (date, 3)
-        if strlen (date) == 5
-            let date = strftime("%Y")."-".date
+        let array = []
+        if strlen (date) == 5 " MM-DD
+			" If the event's month is more than one month ago, assume that the
+			" event date should be for next year.
+        	if (((strpart(date, 0, 2)-1) % 12)+1) < (strftime("%m")-1)
+				let year = string(strftime("%Y")+1)
+			else
+				let year = strftime("%Y")
+			endif
+
+            let date = year."-".date
+		elseif strlen (date) == 8 " MM-DD-YY
+			let array = split(date, '-')
+			let date = "20".array[-1]."-".join(array[0:1], '-')
+		elseif strlen (date) == 10 " MM-DD-YYYY
+			let array = split(date, '-')
+			let date = array[-1]."-".join(array[0:1], '-')
         endif
 
         " Remove indentation
@@ -347,7 +367,30 @@ function! Agtd_displayCalendar()
     " Make that temporal buffer
     let tmpBuffer = "tmpGtdCalendarDisp.tmp"
     let gtdBuffer = bufnr ('')
-    silent! exe 'edit '. tmpBuffer
+
+    " Depending on user selection, open calendar in a new tab,
+    " the preview window, or (default, old behavior) a buffer
+	if g:agtd_calendar_window == 'tab'
+		silent! exe 'tabedit '. tmpBuffer
+	elseif g:agtd_calendar_window == 'preview'
+		" Open the calendar in the preview window
+		silent! exe 'pedit '. tmpBuffer
+		" Switch to preview window
+		exe "normal \<C-W>P"
+	elseif g:agtd_calendar_window == 'split'
+		silent! exe 'split '. tmpBuffer
+	elseif g:agtd_calendar_window == 'vsplit'
+		silent! exe 'vsplit '. tmpBuffer
+	else
+		silent! exe 'edit '. tmpBuffer
+	end
+
+    " If we are opening the calendar after it has been previously opened, the file
+    " already exists, and we need to make it modifiable and clear it, or
+    " errors will be created.
+    set noro
+    normal ggdG
+
     set buftype=nofile
     set bufhidden=hide
     set noswf
@@ -358,24 +401,42 @@ function! Agtd_displayCalendar()
 
     " Display sorted list of dates and grouped by months
     let thisMonth = "XX"
+    let thisYear = "XXXX"
     for line in sort (datesList)
         " Remove date and following empty spaces
         let line = substitute (line, s:agtd_dateRegx.'\s*', "", "")
+
+		" Insert year if different from previous one
+		let year = matchstr(line,'\d\d\d\d')
+		if match (year, thisYear) == -1
+			let thisYear = year
+			call append ('$', "")
+			call append ('$', year)
+		endif
 
         " Insert month if different from the previous one
         let month = matchstr(line, '-\d\d-')
         if match (month, thisMonth) == -1
             let thisMonth = month
             call append ('$', "")
-            call append ('$', month)
+            call append ('$', "\t".month)
+            call append ('$', "")
         endif
 
-        call append ('$', "\t".line)
+        call append ('$', "\t\t".line)
     endfor
 
     " Remove two empty lines from the beginning and open all folds
     normal gg2ddzR
+    " Strip off trailing white space
+    silent! %s/\s\+$
     set ro
+
+    " If we open the calendar in the preview window, switch back to the main
+    " window
+	if g:agtd_calendar_window == 'preview'
+		exe "normal \<C-W>p"
+	end
 endfunction
 
 

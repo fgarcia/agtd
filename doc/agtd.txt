@@ -13,7 +13,8 @@ Version AGTD v0.1 ALPHA, for Vim version 7, 2010-01-19
 
                 1. Intro........................|agtd-intro|
                 2. Getting started..............|agtd-getstarted|
-                3. Todo.........................|agtd-todo|
+                3. Configuration................|agtd-config|
+                4. Todo.........................|agtd-todo|
 
 Please, be aware that this is a highly young experimental project that I write
 in my free time. I might reconsider some concepts, I might change the notation
@@ -123,7 +124,19 @@ functions:
 
 
 ==============================================================================
-3. TODO                                                 *agtd-todo*
+3. CONFIGURATION                                        *agtd-config*
+
+                                                        *agtd_calendar_window*
+This option tells AGTD where to open the calendar window when running
+:GCalendar.  Valid options are 'tab', 'preview', 'split', 'vsplit' and
+'buffer' (default).
+>
+    let g:agtd_calendar_window = OPTION
+>
+
+
+==============================================================================
+4. TODO                                                 *agtd-todo*
 
 - Improve this documentation
 - Better integration with the UTL script
