@@ -1,0 +1,9 @@
+AGTD 0.4, not released
+-------------------------------
+	Gerhard Siegesmund <jerri@jerri.de>
+		* Ftdetect for automatic filetype-setting
+		* Added some colors for console vim
+	
+	Jason Graham
+		* Fixed label creation for multiple subtasks
+		* Several calendar improvements
