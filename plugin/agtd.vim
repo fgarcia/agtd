@@ -18,7 +18,7 @@
 "   https://github.com/fgarcia/agtd
 "   http://www.vim.org/scripts/script.php?script_id=2946
 "
-" Files:    
+" Files:
 "       doc/agtd.txt
 "       plugin/agtd.vim
 "       syntax/agtd.vim
